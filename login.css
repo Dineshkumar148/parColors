@@ -1,0 +1,35 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Left side styles */
+.banner-bg-color {
+  background-color: #ff5d251f;
+}
+
+.image-container {
+  background: url("images/parcolors-banner-image.png") no-repeat center center;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
+
+/* Right side styles */
+.form-manditory {
+  color: red;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 25%;
+  right: 16px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #ff5d25 !important;
+  border: none !important;
+}
