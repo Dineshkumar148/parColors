@@ -1,0 +1,518 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ParColors | Student List</title>
+    <link rel="stylesheet" href="list.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container-fluid py-3 px-3 px-md-5">
+        <div class="d-flex justify-content-between pb-3">
+            <h1>Student List</h1>
+            <div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudent">Add Student</button>
+            </div>
+        </div>
+        <section class="row">
+            <table class="table table-hover" id="studentTable">
+                <thead>
+                    <tr class="bg-primary text-white">
+                        <th scope="col">No.</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <div class="modal fade" id="addStudent" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="studentForm" action="POST">
+                    <div class="modal-body">
+                        <div class="mb-3 row">
+                            <label for="studentName" class="col-sm-4 col-form-label">Student Name <span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="studentName" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="studentEmail" class="col-sm-4 col-form-label">Email Address <span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control" id="studentEmail" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="studentPhone" class="col-sm-4 col-form-label">Phone Number<span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="studentPhone" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="studentSize" class="col-sm-4 col-form-label">Size<span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <textarea class="form-control" id="studentSize" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="studentSize" class="col-sm-4 col-form-label">Size<span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="studentSize" multiple required>
+                                    <option value="Small">Small</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Large">Large</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script>
+        // Function to fetch and display all students
+        function fetchStudents() {
+            fetch('/students')
+            .then(response => response.json())
+            .then(data => {
+                const table = document.getElementById('studentTable').getElementsByTagName('tbody')[0];
+                table.innerHTML = ''; // Clear existing rows
+                data.forEach((student, index) => {
+                    const newRow = table.insertRow();
+                    const cell1 = newRow.insertCell(0);
+                    const cell2 = newRow.insertCell(1);
+                    const cell3 = newRow.insertCell(2);
+                    const cell4 = newRow.insertCell(3);
+                    const cell5 = newRow.insertCell(4);
+
+                    cell1.textContent = index + 1;
+                    cell2.textContent = student.name;
+                    cell3.textContent = student.email;
+                    cell4.textContent = student.phonenumber;
+                    cell5.textContent = student.size;
+                });
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Fetch and display student when the page loads
+        document.addEventListener('DOMContentLoaded', fetchStudents);
+
+        // Handle form submission
+        document.getElementById('studentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const studentName = document.getElementById('studentName').value;
+            const studentEmail = document.getElementById('studentEmail').value;
+            const studentPhone = document.getElementById('studentPhone').value;
+            const studentSize = document.getElementById('studentSize').value;
+
+            const newStudent = {
+                name: studentName,
+                email: studentEmail,
+                phonenumber: studentPhone,
+                size: studentSize,
+            };
+
+            fetch('/student', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newStudent),
+            })
+            .then(response => response.json())
+            .then(data => {
+                fetchStudents(); // Refresh the table data
+                document.getElementById('studentForm').reset();
+                document.querySelector('#addStudent .btn-close').click();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ParColors | Student List</title>
+    <link rel="stylesheet" href="list.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container-fluid py-3 px-3 px-md-5">
+        <div class="d-flex justify-content-between pb-3">
+            <h1>Student List</h1>
+            <div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudent">Add Student</button>
+            </div>
+        </div>
+        <section class="row">
+            <table class="table table-hover" id="studentTable">
+                <thead>
+                    <tr class="bg-primary text-white">
+                        <th scope="col">No.</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <div class="modal fade" id="addStudent" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="studentForm" action="POST">
+                    <div class="modal-body">
+                        <div class="mb-3 row">
+                            <label for="studentName" class="col-sm-4 col-form-label">Student Name <span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="studentName" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="studentEmail" class="col-sm-4 col-form-label">Email Address <span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control" id="studentEmail" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="studentPhone" class="col-sm-4 col-form-label">Phone Number<span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="studentPhone" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="studentSize" class="col-sm-4 col-form-label">Size<span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <div id="sizeContainer">
+                                    <div class="input-group mb-2">
+                                        <select class="form-control" id="studentSize1" name="studentSize[]" required>
+                                            <option value="">Select Size</option>
+                                            <option value="Small">Small</option>
+                                            <option value="Medium">Medium</option>
+                                            <option value="Large">Large</option>
+                                        </select>
+                                        <button class="btn btn-danger" type="button" onclick="removeSize(this)">Remove</button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary" type="button" onclick="addSize()">Add Another Size</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script>
+        // Function to fetch and display all students
+        function fetchStudents() {
+            fetch('/students')
+            .then(response => response.json())
+            .then(data => {
+                const table = document.getElementById('studentTable').getElementsByTagName('tbody')[0];
+                table.innerHTML = ''; // Clear existing rows
+                data.forEach((student, index) => {
+                    const newRow = table.insertRow();
+                    const cell1 = newRow.insertCell(0);
+                    const cell2 = newRow.insertCell(1);
+                    const cell3 = newRow.insertCell(2);
+                    const cell4 = newRow.insertCell(3);
+                    const cell5 = newRow.insertCell(4);
+
+                    cell1.textContent = index + 1;
+                    cell2.textContent = student.name;
+                    cell3.textContent = student.email;
+                    cell4.textContent = student.phonenumber;
+                    cell5.textContent = student.size.join(', '); // Join the array values
+                });
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Fetch and display students when the page loads
+        document.addEventListener('DOMContentLoaded', fetchStudents);
+
+        // Handle form submission
+        document.getElementById('studentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const studentName = document.getElementById('studentName').value;
+            const studentEmail = document.getElementById('studentEmail').value;
+            const studentPhone = document.getElementById('studentPhone').value;
+            const studentSize = Array.from(document.querySelectorAll('select[name="studentSize[]"]')).map(select => select.value);
+
+            const newStudent = {
+                name: studentName,
+                email: studentEmail,
+                phonenumber: studentPhone,
+                size: studentSize,
+            };
+
+            fetch('/student', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newStudent),
+            })
+            .then(response => response.json())
+            .then(data => {
+                fetchStudents(); // Refresh the table data
+                document.getElementById('studentForm').reset();
+                document.querySelector('#addStudent .btn-close').click();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Add another size input
+        function addSize() {
+            const sizeContainer = document.getElementById('sizeContainer');
+            const newSizeDiv = document.createElement('div');
+            newSizeDiv.className = 'input-group mb-2';
+            newSizeDiv.innerHTML = `
+                <select class="form-control" name="studentSize[]" required>
+                    <option value="">Select Size</option>
+                    <option value="Small">Small</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Large">Large</option>
+                </select>
+                <button class="btn btn-danger" type="button" onclick="removeSize(this)">Remove</button>
+            `;
+            sizeContainer.appendChild(newSizeDiv);
+        }
+
+        // Remove size input
+        function removeSize(button) {
+            const sizeContainer = document.getElementById('sizeContainer');
+            sizeContainer.removeChild(button.parentElement);
+        }
+    </script>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ParColors | Student List</title>
+    <link rel="stylesheet" href="list.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container-fluid py-3 px-3 px-md-5">
+        <div class="d-flex justify-content-between pb-3">
+            <h1>Student List</h1>
+            <div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudent">Add Student</button>
+            </div>
+        </div>
+        <section class="row">
+            <table class="table table-hover" id="studentTable">
+                <thead>
+                    <tr class="bg-primary text-white">
+                        <th scope="col">No.</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example rows -->
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <div class="modal fade" id="addStudent" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="studentForm" action="POST">
+                    <div class="modal-body">
+                        <div class="mb-3 row">
+                            <label for="studentName" class="col-sm-4 col-form-label">Student Name <span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="studentName" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="studentEmail" class="col-sm-4 col-form-label">Email Address <span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control" id="studentEmail" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="studentPhone" class="col-sm-4 col-form-label">Phone Number<span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="studentPhone" minlength="10" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="studentSize" class="col-sm-4 col-form-label">Size<span class="primary-color">*</span></label>
+                            <div class="col-sm-8">
+                                <div id="sizeContainer">
+                                    <div class="input-group mb-2">
+                                        <select class="form-control" id="studentSize1" name="studentSize[]" required>
+                                            <option value="">Select Size</option>
+                                            <option value="Small">Small</option>
+                                            <option value="Medium">Medium</option>
+                                            <option value="Large">Large</option>
+                                        </select>
+                                        <button class="btn btn-danger" type="button" onclick="removeSize(this)">Remove</button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary" type="button" onclick="addSize()">Add Another Size</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script>
+        // Function to fetch and display all students
+        function fetchStudents() {
+            fetch('/students')
+            .then(response => response.json())
+            .then(data => {
+                const table = document.getElementById('studentTable').getElementsByTagName('tbody')[0];
+                table.innerHTML = ''; // Clear existing rows
+                data.forEach((student, index) => {
+                    const newRow = table.insertRow();
+                    const cell1 = newRow.insertCell(0);
+                    const cell2 = newRow.insertCell(1);
+                    const cell3 = newRow.insertCell(2);
+                    const cell4 = newRow.insertCell(3);
+                    const cell5 = newRow.insertCell(4);
+
+                    cell1.textContent = index + 1;
+                    cell2.textContent = student.name;
+                    cell3.textContent = student.email;
+                    cell4.textContent = student.phonenumber;
+                    cell5.textContent = Array.isArray(student.size) ? student.size.join(', ') : student.size; // Join the array values
+                });
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Fetch and display students when the page loads
+        document.addEventListener('DOMContentLoaded', fetchStudents);
+
+        // Handle form submission
+        document.getElementById('studentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const studentName = document.getElementById('studentName').value;
+            const studentEmail = document.getElementById('studentEmail').value;
+            const studentPhone = document.getElementById('studentPhone').value;
+            const studentSize = Array.from(document.querySelectorAll('select[name="studentSize[]"]')).map(select => select.value);
+
+            const newStudent = {
+                name: studentName,
+                email: studentEmail,
+                phonenumber: studentPhone,
+                size: studentSize,
+            };
+
+            fetch('/student', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newStudent),
+            })
+            .then(response => response.json())
+            .then(data => {
+                fetchStudents(); // Refresh the table data
+                document.getElementById('studentForm').reset();
+                document.querySelector('#addStudent .btn-close').click();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Add another size input
+        function addSize() {
+            const sizeContainer = document.getElementById('sizeContainer');
+            const newSizeDiv = document.createElement('div');
+            newSizeDiv.className = 'input-group mb-2';
+            newSizeDiv.innerHTML = `
+                <select class="form-control" name="studentSize[]" required>
+                    <option value="">Select Size</option>
+                    <option value="Small">Small</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Large">Large</option>
+                </select>
+                <button class="btn btn-danger" type="button" onclick="removeSize(this)">Remove</button>
+            `;
+            sizeContainer.appendChild(newSizeDiv);
+        }
+
+        // Remove size input
+        function removeSize(button) {
+            const sizeContainer = document.getElementById('sizeContainer');
+            sizeContainer.removeChild(button.parentElement);
+        }
+    </script>
+</body>
+</html>

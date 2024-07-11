@@ -1,0 +1,938 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ParColors | Department List</title>
+    
+    <link rel="stylesheet" href="list.css" />
+    
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container-fluid py-3 px-3 px-md-5">
+      <div class="d-flex justify-content-between pb-3">
+        <h1>Department List</h1>
+        <div>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#addDepartmentModal"
+          >
+            Add Department
+          </button>
+        </div>
+      </div>
+      
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/college.html" class="text-decoration-none">College</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Department</li>
+        </ol>
+      </nav>
+     
+      <section class="row">
+        <table class="table table-hover" id="departmentTable">
+          <thead>
+            <tr class="bg-primary text-white">
+              <th scope="col">No.</th>
+              <th scope="col">Department Name</th>
+              <th scope="col">Under Graduate</th>
+              <th scope="col">Post Graduate</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
+   
+    <div
+      class="modal fade"
+      id="addDepartmentModal"
+      tabindex="-1"
+      aria-labelledby="addDepartmentModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addDepartmentModalLabel">
+              Add Department
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form id="departmentForm">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="departmentName" class="form-label"
+                  >Department Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="departmentName"
+                  required
+                />
+                 <label for="collegeid" class="form-label">College ID</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="collegeid"
+                  required
+                /> 
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Add Department
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      document
+        .getElementById("departmentForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const departmentName =
+            document.getElementById("departmentName").value;
+
+          const collegeid = document.getElementById("collegeid").value;
+
+          // Get the collegeId from the URL query parameter
+          const urlParams = new URLSearchParams(window.location.search);
+          const collegeId = urlParams.get("collegeid");
+
+          if (!collegeid) {
+            alert("College ID is missing.");
+            return;
+          }
+
+          try {
+            const response = await fetch("/dept", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                deptname: departmentName,
+                collegeid: collegeid,
+              }),
+            });
+
+            if (response.ok) {
+              const newDepartment = await response.json(); // Parse JSON response
+              addDepartmentToTable(newDepartment);
+              document.getElementById("departmentForm").reset();
+              document.querySelector("#addDepartmentModal .btn-close").click();
+            } else {
+              const errorText = await response.text();
+              // alert("Error: " + message);
+              throw new Error(errorText);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred:" + error.message);
+          }
+        });
+
+      function addDepartmentToTable(department) {
+        const table = document
+          .getElementById("departmentTable")
+          .getElementsByTagName("tbody")[0];
+        const newRow = table.insertRow();
+        const cell1 = newRow.insertCell(0);
+        const cell2 = newRow.insertCell(1);
+        const cell3 = newRow.insertCell(2);
+        const cell4 = newRow.insertCell(3);
+
+        cell1.textContent = table.rows.length + 1;
+        cell2.textContent = department.deptname;
+        cell3.innerHTML =
+          '<a href="/UG.html" class="text-decoration-none">UG</a>';
+        cell4.innerHTML =
+          '<a href="/PG.html" class="text-decoration-none">PG</a>';
+      }
+
+      async function loadDepartments() {
+        try {
+          // Get the collegeId from the URL query parameter
+          const urlParams = new URLSearchParams(window.location.search);
+          const collegeid = 3;
+          console.log("collegeid:", collegeid);
+
+          if (!collegeid) {
+            alert("College ID is missing.");
+            return;
+          }
+
+          const response = await fetch(`/depts?collegeid=3`);
+          //     if (!response.ok) {
+          //   throw new Error('Failed to fetch departments');
+          // }
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText);
+          }
+          const departments = await response.json();
+          const tableBody = document
+            .getElementById("departmentTable")
+            .getElementsByTagName("tbody")[0];
+          tableBody.innerHTML = "";
+
+          departments.forEach((dept, index) => {
+            const newRow = tableBody.insertRow();
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+            const cell4 = newRow.insertCell(3);
+
+            cell1.textContent = index + 1;
+            cell2.textContent = dept.deptname;
+            cell3.innerHTML =
+              '<a href="/UG.html" class="text-decoration-none">UG</a>';
+            cell4.innerHTML =
+              '<a href="/PG.html" class="text-decoration-none">PG</a>';
+          });
+        } catch (error) {
+          console.error("Error loading departments:", error);
+          alert("An error occurred: " + error.message); // Handle error loading departments
+        }
+      }
+
+      // Load departments when the page loads
+      window.onload = loadDepartments;
+    </script>
+  </body>
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ParColors | Department List</title>
+    
+    <link rel="stylesheet" href="list.css" />
+    
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container-fluid py-3 px-3 px-md-5">
+      <div class="d-flex justify-content-between pb-3">
+        <h1>Department List</h1>
+        <div>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#addDepartmentModal"
+          >
+            Add Department
+          </button>
+        </div>
+      </div>
+      
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/college.html" class="text-decoration-none">College</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Department</li>
+        </ol>
+      </nav>
+      
+      <section class="row">
+        <table class="table table-hover" id="departmentTable">
+          <thead>
+            <tr class="bg-primary text-white">
+              <th scope="col">No.</th>
+              <th scope="col">Department Name</th>
+              <th scope="col">Under Graduate</th>
+              <th scope="col">Post Graduate</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
+   
+    <div
+      class="modal fade"
+      id="addDepartmentModal"
+      tabindex="-1"
+      aria-labelledby="addDepartmentModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addDepartmentModalLabel">
+              Add Department
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form id="departmentForm" action="POST">
+            <div class="modal-body">
+              <div class="mb-3 row">
+                <label for="deptName" class="col-sm-4 col-form-label"
+                  >Department Name <span class="primary-color">*</span></label
+                >
+                <div class="col-sm-8">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="deptName"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="underGraduate" class="col-sm-4 col-form-label"
+                  >Under Graduate</label
+                >
+                <div class="col-sm-8">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="underGraduate"
+                  />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="postGraduate" class="col-sm-4 col-form-label"
+                  >Post Graduate</label
+                >
+                <div class="col-sm-8">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="postGraduate"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+    
+    <script>
+      // Function to load departments for a specific college
+      function loadDepartments() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const collegeId = urlParams.get("collegeid");
+
+        if (collegeId) {
+          fetch(`/departments?collegeid=${collegeId}`)
+            .then((response) => response.json())
+            .then((data) => {
+              const tableBody =
+                document
+                  .getElementById("departmentTable")
+                  .getElementsByTagName("tbody")[0];
+              tableBody.innerHTML = ""; // Clear existing rows
+              data.forEach((department, index) => {
+                const newRow = tableBody.insertRow();
+                const cell1 = newRow.insertCell(0);
+                const cell2 = newRow.insertCell(1);
+                const cell3 = newRow.insertCell(2);
+                const cell4 = newRow.insertCell(3);
+
+                cell1.textContent = index + 1;
+                cell2.textContent = department.deptname;
+                cell3.textContent = department.undergraduate;
+                cell4.textContent = department.postgraduate;
+              });
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        } else {
+          console.error("College ID not found in the URL");
+        }
+      }
+
+      // Load departments when the page loads
+      document.addEventListener("DOMContentLoaded", loadDepartments);
+
+      // Handle form submission
+      document
+        .getElementById("departmentForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const deptName = document.getElementById("deptName").value;
+          const underGraduate =
+            document.getElementById("underGraduate").value;
+          const postGraduate =
+            document.getElementById("postGraduate").value;
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const collegeId = urlParams.get("collegeid");
+
+          if (collegeId) {
+            const newDepartment = {
+              deptName: deptName,
+              underGraduate: underGraduate,
+              postGraduate: postGraduate,
+              collegeId: collegeId,
+            };
+
+            fetch("/add-department", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(newDepartment),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                loadDepartments(); // Refresh the table data
+                document.getElementById("departmentForm").reset();
+                document
+                  .querySelector("#addDepartmentModal .btn-close")
+                  .click();
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+          } else {
+            console.error("College ID not found in the URL");
+          }
+        });
+    </script>
+  </body>
+</html> -->
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ParColors | Department List</title>
+    
+    <link rel="stylesheet" href="list.css" />
+    
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container-fluid py-3 px-3 px-md-5">
+      <div class="d-flex justify-content-between pb-3">
+        <h1>Department List</h1>
+        <div>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#addDepartmentModal"
+          >
+            Add Department
+          </button>
+        </div>
+      </div>
+      
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/college.html" class="text-decoration-none">College</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Department</li>
+        </ol>
+      </nav>
+     
+      <section class="row">
+        <table class="table table-hover" id="departmentTable">
+          <thead>
+            <tr class="bg-primary text-white">
+              <th scope="col">No.</th>
+              <th scope="col">Department Name</th>
+              <th scope="col">Under Graduate</th>
+              <th scope="col">Post Graduate</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
+   
+    <div
+      class="modal fade"
+      id="addDepartmentModal"
+      tabindex="-1"
+      aria-labelledby="addDepartmentModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addDepartmentModalLabel">
+              Add Department
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form id="departmentForm" action="POST">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="departmentName" class="form-label"
+                  >Department Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="departmentName"
+                  required
+                />
+                 <label for="collegeid" class="form-label">College ID</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="collegeid"
+                  required
+                /> 
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Add Department
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      document
+        .getElementById("departmentForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const departmentName =
+            document.getElementById("departmentName").value;
+
+          const collegeid = document.getElementById("collegeid").value;
+
+          // Get the collegeId from the URL query parameter
+          const urlParams = new URLSearchParams(window.location.search);
+          const collegeId = urlParams.get("collegeid");
+
+          if (!collegeid) {
+            alert("College ID is missing.");
+            return;
+          }
+
+          try {
+            const response = await fetch("/dept", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                deptname: departmentName,
+                collegeid: collegeid,
+              }),
+            });
+
+            if (response.ok) {
+              const newDepartment = await response.json(); // Parse JSON response
+              addDepartmentToTable(newDepartment);
+              document.getElementById("departmentForm").reset();
+              document.querySelector("#addDepartmentModal .btn-close").click();
+            } else {
+              const errorText = await response.text();
+              // alert("Error: " + message);
+              throw new Error(errorText);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred:" + error.message);
+          }
+        });
+
+      function addDepartmentToTable(department) {
+        const table = document
+          .getElementById("departmentTable")
+          .getElementsByTagName("tbody")[0];
+        const newRow = table.insertRow();
+        const cell1 = newRow.insertCell(0);
+        const cell2 = newRow.insertCell(1);
+        const cell3 = newRow.insertCell(2);
+        const cell4 = newRow.insertCell(3);
+
+        cell1.textContent = table.rows.length + 1;
+        cell2.textContent = department.deptname;
+        cell3.innerHTML =
+          '<a href="/UG.html" class="text-decoration-none">UG</a>';
+        cell4.innerHTML =
+          '<a href="/PG.html" class="text-decoration-none">PG</a>';
+      }
+
+      async function loadDepartments() {
+        try {
+          // Get the collegeId from the URL query parameter
+          const urlParams = new URLSearchParams(window.location.search);
+          const collegeid = 3;
+          console.log("collegeid:", collegeid);
+
+          if (!collegeid) {
+            alert("College ID is missing.");
+            return;
+          }
+
+          const response = await fetch(`/depts?collegeid=3`);
+          //     if (!response.ok) {
+          //   throw new Error('Failed to fetch departments');
+          // }
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText);
+          }
+          const departments = await response.json();
+          const tableBody = document
+            .getElementById("departmentTable")
+            .getElementsByTagName("tbody")[0];
+          tableBody.innerHTML = "";
+
+          departments.forEach((dept, index) => {
+            const newRow = tableBody.insertRow();
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+            const cell4 = newRow.insertCell(3);
+
+            cell1.textContent = index + 1;
+            cell2.textContent = dept.deptname;
+            cell3.innerHTML =
+              '<a href="/UG.html" class="text-decoration-none">UG</a>';
+            cell4.innerHTML =
+              '<a href="/PG.html" class="text-decoration-none">PG</a>';
+          });
+        } catch (error) {
+          console.error("Error loading departments:", error);
+          alert("An error occurred: " + error.message); // Handle error loading departments
+        }
+      }
+
+      // Load departments when the page loads
+      window.onload = loadDepartments;
+    </script>
+  </body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ParColors | Department List</title>
+    
+    <link rel="stylesheet" href="list.css" />
+    
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container-fluid py-3 px-3 px-md-5">
+      <div class="d-flex justify-content-between pb-3">
+        <h1>Department List</h1>
+        <div>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#addDepartmentModal"
+          >
+            Add Department
+          </button>
+        </div>
+      </div>
+      
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/college.html" class="text-decoration-none">College</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Department</li>
+        </ol>
+      </nav>
+     
+      <section class="row">
+        <table class="table table-hover" id="departmentTable">
+          <thead>
+            <tr class="bg-primary text-white">
+              <th scope="col">No.</th>
+              <th scope="col">Department Name</th>
+              <th scope="col">College ID</th>
+              <th scope="col">Department Head</th>
+              <th scope="col">Email</th>
+              <th scope="col">Phone Number</th>
+              <th scope="col">UG</th>
+              <th scope="col">PG</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
+   
+    <div
+      class="modal fade"
+      id="addDepartmentModal"
+      tabindex="-1"
+      aria-labelledby="addDepartmentModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addDepartmentModalLabel">
+              Add Department
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form id="departmentForm">
+            <input type="hidden" id="defaultCollegeId" value="3" />
+            <div class="modal-body">
+              <div class="mb-3 row">
+                <label for="departmentName" class="col-sm-4 form-label">Department Name</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control"  id="departmentName" required />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="collegeId" class="col-sm-4 form-label">College ID</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="collegeId" required />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="departmentHead" class="col-sm-4 form-label">Department Head</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="departmentHead" required />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="email" class="col-sm-4 form-label">Email</label>
+                <div class="col-sm-8">
+                  <input type="email" class="form-control" id="email" required />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="phoneNumber" class="col-sm-4 form-label">Phone Number</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="phoneNumber" maxlength="10" minlength="10" />
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Add Department</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      document.getElementById("departmentForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const departmentName = document.getElementById("departmentName").value;
+        const collegeId = document.getElementById("collegeId").value;
+        const departmentHead = document.getElementById("departmentHead").value;
+        const email = document.getElementById("email").value;
+        const phoneNumber = document.getElementById("phoneNumber").value;
+
+        try {
+          const response = await fetch("/dept", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              deptname: departmentName,
+              collegeid: collegeId,
+              departmenthead: departmentHead,
+              email: email,
+              phonenumber: phoneNumber
+            }),
+          });
+
+          if (response.ok) {
+            const newDepartment = await response.json(); // Parse JSON response
+            addDepartmentToTable(newDepartment);
+            document.getElementById("departmentForm").reset();
+            document.querySelector("#addDepartmentModal .btn-close").click();
+          } else {
+            const errorText = await response.text();
+            throw new Error(errorText);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred: " + error.message);
+        }
+      });
+
+      function addDepartmentToTable(department) {
+        const table = document.getElementById("departmentTable").getElementsByTagName("tbody")[0];
+        const newRow = table.insertRow();
+        const cell1 = newRow.insertCell(0);
+        const cell2 = newRow.insertCell(1);
+        const cell3 = newRow.insertCell(2);
+        const cell4 = newRow.insertCell(3);
+        const cell5 = newRow.insertCell(4);
+        const cell6 = newRow.insertCell(5);
+        const cell7 = newRow.insertCell(6);
+        const cell8 = newRow.insertCell(7);
+
+        cell1.textContent = table.rows.length + 1;
+        cell2.textContent = department.deptname;
+        cell3.textContent = department.collegeid;
+        cell4.textContent = department.departmenthead;
+        cell5.textContent = department.email;
+        cell6.textContent = department.phonenumber;
+        cell7.innerHTML = `<a href="/UG.html?departmentid=${dept.departmentid}" class="text-decoration-none">UG</a>`;
+        cell8.innerHTML = `<a href="/PG.html?departmentid=${dept.departmentid}" class="text-decoration-none">PG</a>`;
+      }
+
+      async function loadDepartments() {
+        try {
+          // Get the collegeId from the URL query parameter
+          const urlParams = new URLSearchParams(window.location.search);
+          const collegeId = urlParams.get("collegeid");
+
+          if (!collegeId) {
+            alert("College ID is missing.");
+            return;
+          }
+
+          const response = await fetch(`/depts?collegeid=${collegeId}`);
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText);
+          }
+
+          const departments = await response.json();
+          const tableBody = document.getElementById("departmentTable").getElementsByTagName("tbody")[0];
+          tableBody.innerHTML = "";
+
+          departments.forEach((dept, index) => {
+            const newRow = tableBody.insertRow();
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+            const cell4 = newRow.insertCell(3);
+            const cell5 = newRow.insertCell(4);
+            const cell6 = newRow.insertCell(5);
+            const cell7 = newRow.insertCell(6);
+            const cell8 = newRow.insertCell(7);
+
+            cell1.textContent = index + 1;
+            cell2.textContent = dept.deptname;
+            cell3.textContent = dept.collegeid;
+            cell4.textContent = dept.departmenthead;
+            cell5.textContent = dept.email;
+            cell6.textContent = dept.phonenumber;
+            cell7.innerHTML = `<a href="/UG.html?departmentid=${dept.departmentid}" class="text-decoration-none">UG</a>`;
+            cell8.innerHTML = `<a href="/PG.html?departmentid=${dept.departmentid}" class="text-decoration-none">PG</a>`;
+          });
+        } catch (error) {
+          console.error("Error loading departments:", error);
+          alert("An error occurred: " + error.message);
+        }
+      }
+
+      // Load departments when the page loads
+      window.onload = loadDepartments;
+    </script>
+  </body>
+</html>

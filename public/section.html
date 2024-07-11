@@ -1,0 +1,277 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParColors | <Section></Section> List</title>
+  
+  <link rel="stylesheet" href="list.css" />
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+</head>
+<body>
+  <div class="container-fluid py-3 px-3 px-md-5">
+    <div class="d-flex justify-content-between pb-3">
+      <h1>Section List</h1>
+      <div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSectionModal">
+          Add Section
+        </button>
+      </div>
+    </div>
+    
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/UG.html" class="text-decoration-none">UG list</a></li>
+        <li class="breadcrumb-item"><a href="/PG.html" class="text-decoration-none">PG list</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Section</li>
+      </ol>
+    </nav>
+    
+    <section class="row">
+      <table class="table table-hover" id="departmentTable">
+        <thead>
+          <tr class="bg-primary text-white">
+            <th scope="col">No.</th>
+            <th scope="col">Section</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <div class="modal fade" id="addSectionModal" tabindex="-1" aria-labelledby="addSectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addSectionLabel">Add section</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="sectionForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="sectionName" class="form-label">Section Name</label>
+              <input type="text" class="form-control" id="sectionName" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Add section</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script>
+    document.getElementById('sectionForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const departmentName = document.getElementById('sectionName').value;
+
+      try {
+        const response = await fetch('/dept', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ deptname: sectionName })
+        });
+
+        if (response.ok) {
+          const newDepartment = await response.json(); // Parse JSON response
+          addDepartmentToTable(newDepartment);
+          document.getElementById('sectionForm').reset();
+          document.querySelector('#addDepartmentModal .btn-close').click();
+        } else {
+          const message = await response.text();
+          alert('Error: ' + message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        // alert('An error occurred');
+      }
+    });
+
+    function addDepartmentToTable(department) {
+      const table = document.getElementById('departmentTable').getElementsByTagName('tbody')[0];
+      const newRow = table.insertRow();
+      const cell1 = newRow.insertCell(0);
+      const cell2 = newRow.insertCell(1);
+      const cell3 = newRow.insertCell(2);
+      const cell4 = newRow.insertCell(3);
+
+      cell1.textContent = table.rows.length + 1;
+      cell2.textContent = department.deptname;
+    //   cell3.innerHTML = '<a href="/UG.html" class="text-decoration-none">UG</a>';
+    //   cell4.innerHTML = '<a href="/PG.html" class="text-decoration-none">PG</a>';
+    }
+
+    async function loadDepartments() {
+      try {
+        const response = await fetch('/dept');
+        const departments = await response.json();
+        const tableBody = document.getElementById('departmentTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = '';
+
+        departments.forEach((dept, index) => {
+          const newRow = tableBody.insertRow();
+          const cell1 = newRow.insertCell(0);
+          const cell2 = newRow.insertCell(1);
+          const cell3 = newRow.insertCell(2);
+          const cell4 = newRow.insertCell(3);
+
+          cell1.textContent = index + 1;
+          cell2.textContent = dept.deptname;
+        //   cell3.innerHTML = '<a href="/UG.html" class="text-decoration-none">UG</a>';
+        //   cell4.innerHTML = '<a href="/PG.html" class="text-decoration-none">PG</a>';
+        });
+      } catch (error) {
+        console.error('Error loading departments:', error);
+      }
+    }
+
+    // Load departments when the page loads
+    window.onload = loadDepartments;
+  </script>
+</body>
+</html> -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParColors | Section List</title>
+  <!-- CSS Link -->
+  <link rel="stylesheet" href="list.css" />
+  <!-- Bootstrap Link -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+</head>
+<body>
+  <div class="container-fluid py-3 px-3 px-md-5">
+    <div class="d-flex justify-content-between pb-3">
+      <h1>Section List</h1>
+      <div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSectionModal">
+          Add Section
+        </button>
+      </div>
+    </div>
+    <!-- Navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/UG.html" class="text-decoration-none">UG list</a></li>
+        <li class="breadcrumb-item"><a href="/PG.html" class="text-decoration-none">PG list</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Section</li>
+      </ol>
+    </nav>
+    <!-- Section List -->
+    <section class="row">
+      <table class="table table-hover" id="sectionTable">
+        <thead>
+          <tr class="bg-primary text-white">
+            <th scope="col">No.</th>
+            <th scope="col">Section</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </section>
+  </div>
+  <!-- Add Section Modal -->
+  <div class="modal fade" id="addSectionModal" tabindex="-1" aria-labelledby="addSectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addSectionLabel">Add section</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="sectionForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="sectionName" class="form-label">Section Name</label>
+              <input type="text" class="form-control" id="sectionName" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Add section</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script>
+    document.getElementById('sectionForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const sectionName = document.getElementById('sectionName').value;
+
+      try {
+        const response = await fetch('/section', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ sectionname: sectionName })
+        });
+
+        if (response.ok) {
+          const newSection = await response.json();
+          addSectionToTable(newSection);
+          document.getElementById('sectionForm').reset();
+          document.querySelector('#addSectionModal .btn-close').click();
+        } else {
+          const message = await response.text();
+          alert('Error: ' + message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while adding the section.');
+      }
+    });
+
+    function addSectionToTable(section) {
+      const table = document.getElementById('sectionTable').getElementsByTagName('tbody')[0];
+      const newRow = table.insertRow();
+      const cell1 = newRow.insertCell(0);
+      const cell2 = newRow.insertCell(1);
+
+      cell1.textContent = table.rows.length;
+    //   cell2.textContent = section.sectionname;
+    cell2.innerHTML = `<a href="/login.html" class="text-decoration-none">${section.sectionname}</a>`;
+    }
+
+    async function loadSections() {
+      try {
+        const response = await fetch('/sections');
+        const sections = await response.json();
+        const tableBody = document.getElementById('sectionTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = '';
+
+        sections.forEach((section, index) => {
+          const newRow = tableBody.insertRow();
+          const cell1 = newRow.insertCell(0);
+          const cell2 = newRow.insertCell(1);
+
+          cell1.textContent = index + 1;
+        //   cell2.textContent = section.sectionname;
+        cell2.innerHTML = `<a href="/student.html" class="text-decoration-none">${section.sectionname}</a>`;
+        });
+      } catch (error) {
+        console.error('Error loading sections:', error);
+      }
+    }
+
+    // Load sections when the page loads
+    window.onload = loadSections;
+  </script>
+</body>
+</html>
